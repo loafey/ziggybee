@@ -16,14 +16,15 @@ pub struct TradFriLampa {
     pub data: &'static str,
 }
 impl TradFriLampa {
-    pub fn send(&self, message: TradfriLampaMsg) {
+    pub fn send(&self, message: TradfriLampaMsg) -> anyhow::Result<()> {
         let cli = CLI.as_ref();
 
         let topic = paho_mqtt::Topic::new(cli, self.data, QOS);
 
-        let tok = topic.publish(serde_json::to_string(&message).unwrap());
-        if let Err(e) = tok.wait() {
-            eprintln!("Error sending message: {:?}", e);
-        }
+        topic
+            .publish(serde_json::to_string(&message).unwrap())
+            .wait()?;
+
+        Ok(())
     }
 }
