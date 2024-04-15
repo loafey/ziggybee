@@ -27,3 +27,7 @@ advanced:
 devices:
   '0xcc86ecfffe327b56':
     friendly_name: '0xcc86ecfffe327b56'
+  '0xa46dd4fffe6766fb':
+    friendly_name: '0xa46dd4fffe6766fb'
+  '0x5cc7c1fffe8b7a9d':
+    friendly_name: '0x5cc7c1fffe8b7a9d'
