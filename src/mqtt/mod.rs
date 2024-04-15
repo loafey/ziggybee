@@ -41,7 +41,7 @@ fn init() -> AsyncClient {
     subscription_loop(stream);
 
     // Subscribe to remotes
-    endpoints::subscribe();
+    endpoints::subscribe(&cli);
 
     cli
 }

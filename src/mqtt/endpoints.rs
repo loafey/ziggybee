@@ -1,5 +1,7 @@
 #![allow(non_upper_case_globals)]
 
+use paho_mqtt::AsyncClient;
+
 use super::{messages::TradfriLampaMsg, CLI, QOS};
 
 pub mod devices {
@@ -42,14 +44,13 @@ pub struct TradfriStyrbar {
     pub data: &'static str,
 }
 impl TradfriStyrbar {
-    pub fn subscribe(&self) {
-        let cli = CLI.as_ref();
+    pub fn subscribe(&self, cli: &AsyncClient) {
         cli.subscribe("zigbee2mqtt/0x5cc7c1fffe8b7a9d/#", QOS)
             .wait()
             .unwrap();
     }
 }
 
-pub fn subscribe() {
-    devices::remotes::styrbar.subscribe();
+pub fn subscribe(cli: &AsyncClient) {
+    devices::remotes::styrbar.subscribe(cli);
 }

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>ZiggyBee</title>
+</head>
+
+<body>
+    <form method="post" action="/update_lamp" id="lamp-form">
+        <input type="range" name="brightness">
+        <input type="color" name="color">
+    </form>
+
+    <script>
+        const postForm = document.getElementById("lamp-form");
+        postForm.onchange = () => {
+            const data = new URLSearchParams();
+            for (const pair of new FormData(postForm)) {
+                data.append(pair[0], pair[1]);
+            }
+
+            fetch("/update_lamp", {
+                method: "POST",
+                body: data,
+            });
+        }
+    </script>
+</body>
+
+</html>
