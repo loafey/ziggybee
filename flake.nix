@@ -40,6 +40,7 @@
           gcc
           mosquitto
           cmake
+          gnumake
         ];
       in
       {
