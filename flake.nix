@@ -38,20 +38,8 @@
           pkg-config
           openssl
           gcc
-          udev
-          alsa-lib
-          xorg.libX11
-          xorg.libXi
-          xorg.libXcursor
-          xorg.libXrandr
-          vulkan-tools
-          vulkan-headers
-          vulkan-loader
-          vulkan-validation-layers
-
-          trenchbroom-working
-          libxkbcommon
-          wayland
+          mosquitto
+          cmake
         ];
       in
       {
@@ -70,15 +58,6 @@
           src = ./.;
           dontPatchELF = true;
           nativeBuildInputs = with pkgs; [ ] ++ min-pkgs;
-          shellHook = ''
-            export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${
-              pkgs.lib.makeLibraryPath [
-                pkgs.udev
-                pkgs.alsaLib
-                pkgs.vulkan-loader
-                pkgs.libxkbcommon
-              ]
-            }"'';
         };
       });
 }

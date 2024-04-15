@@ -1,0 +1,5 @@
+mosquitto-data/
+zigbee2mqtt-data/log
+zigbee2mqtt-data/coordinator_backup.json
+zigbee2mqtt-data/database.db
+zigbee2mqtt-data/state.json
