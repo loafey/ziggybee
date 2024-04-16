@@ -1,6 +1,6 @@
 use crate::mqtt::{
-    devices,
-    messages::{TradfriLampaMsg, TradfriState, Vec2},
+    dev,
+    devices::{tradfri_bulb::TradfriBulbState, Device, OnState, Vec2},
 };
 use axum::{
     response::{Html, Redirect},
@@ -32,13 +32,13 @@ async fn update_lamp(Form(request): Form<UpdateLamp>) -> Redirect {
     let color = convert_color(Rgb::from_hex_str(&request.color).unwrap());
     let brightness = ((request.brightness / 100.0) * 255.0) as u8;
     let state = if brightness == 0 {
-        TradfriState::Off
+        OnState::Off
     } else {
-        TradfriState::On
+        OnState::On
     };
 
-    devices::lamps::living_room
-        .send(TradfriLampaMsg {
+    dev::lamps::living_room
+        .publish(TradfriBulbState {
             brightness: Some(brightness),
             color: Some(color),
             state: Some(state),

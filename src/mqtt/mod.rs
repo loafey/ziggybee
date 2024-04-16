@@ -7,10 +7,11 @@ use std::{
 use tokio::sync::Mutex;
 
 pub mod endpoints;
-pub mod messages;
-pub use endpoints::devices;
+pub mod remote;
+pub use endpoints::dev;
 
-use crate::mqtt::messages::RemoteAction;
+use crate::mqtt::remote::RemoteAction;
+pub mod devices;
 
 const QOS: i32 = 1;
 

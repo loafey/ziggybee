@@ -2,19 +2,19 @@
 
 use paho_mqtt::AsyncClient;
 
-use super::{messages::TradfriLampaMsg, CLI, QOS};
+use super::devices::Device as _;
 
-pub mod devices {
+pub mod dev {
     pub mod lamps {
-        use crate::mqtt::endpoints::TradfriLampa;
+        use crate::mqtt::devices::tradfri_bulb::TradfriBulb;
 
-        pub const living_room: TradfriLampa = TradfriLampa {
+        pub const living_room: TradfriBulb = TradfriBulb {
             data: "zigbee2mqtt/0xa46dd4fffe6766fb/set",
         };
     }
 
     pub mod remotes {
-        use crate::mqtt::endpoints::TradfriStyrbar;
+        use crate::mqtt::devices::tradfri_remote_control_n2::TradfriStyrbar;
 
         pub const styrbar: TradfriStyrbar = TradfriStyrbar {
             data: "zigbee2mqtt/0x5cc7c1fffe8b7a9d/#",
@@ -22,35 +22,6 @@ pub mod devices {
     }
 }
 
-pub struct TradfriLampa {
-    pub data: &'static str,
-}
-impl TradfriLampa {
-    pub async fn send(&self, message: TradfriLampaMsg) -> anyhow::Result<()> {
-        let cli = CLI.as_ref();
-
-        let topic = paho_mqtt::Topic::new(cli, self.data, QOS);
-
-        topic
-            .publish(serde_json::to_string(&message).unwrap())
-            .await?;
-
-        Ok(())
-    }
-}
-
-pub struct TradfriStyrbar {
-    #[allow(unused)]
-    pub data: &'static str,
-}
-impl TradfriStyrbar {
-    pub fn subscribe(&self, cli: &AsyncClient) {
-        cli.subscribe("zigbee2mqtt/0x5cc7c1fffe8b7a9d/#", QOS)
-            .wait()
-            .unwrap();
-    }
-}
-
 pub fn subscribe(cli: &AsyncClient) {
-    devices::remotes::styrbar.subscribe(cli);
+    dev::remotes::styrbar.subscribe(cli);
 }
