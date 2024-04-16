@@ -8,7 +8,6 @@ use tokio::sync::Mutex;
 
 pub mod endpoints;
 pub mod remote;
-pub use endpoints::dev;
 
 use crate::mqtt::remote::RemoteAction;
 pub mod devices;

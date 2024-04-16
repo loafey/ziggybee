@@ -1,0 +1,14 @@
+{
+    "general": {
+        "HAL": {
+            "url": "NA",
+            "type": "HostDevice"
+        }
+    },
+    "living_room": {
+        "Living room lamp": {
+            "url": "zigbee2mqtt/0xa46dd4fffe6766fb",
+            "type": "TradfriBulb"
+        }
+    }
+}

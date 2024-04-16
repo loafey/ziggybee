@@ -1,6 +1,6 @@
-use crate::mqtt::{
-    dev,
-    devices::{tradfri_bulb::TradfriBulbState, Device, OnState, Vec2},
+use crate::mqtt::devices::{
+    tradfri_bulb::{TradfriBulb, TradfriBulbState},
+    Device, OnState, Vec2,
 };
 use axum::{
     response::{Html, Redirect},
@@ -37,15 +37,17 @@ async fn update_lamp(Form(request): Form<UpdateLamp>) -> Redirect {
         OnState::On
     };
 
-    dev::lamps::living_room
-        .publish(TradfriBulbState {
-            brightness: Some(brightness),
-            color: Some(color),
-            state: Some(state),
-            ..Default::default()
-        })
-        .await
-        .unwrap();
+    TradfriBulb {
+        data: "zigbee2mqtt/0xa46dd4fffe6766fb",
+    }
+    .publish(TradfriBulbState {
+        brightness: Some(brightness),
+        color: Some(color),
+        state: Some(state),
+        ..Default::default()
+    })
+    .await
+    .unwrap();
     Redirect::to("/")
 }
 

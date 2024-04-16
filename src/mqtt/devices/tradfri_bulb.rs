@@ -21,7 +21,7 @@ impl Device<TradfriBulbState> for TradfriBulb {
     async fn publish(&self, state: TradfriBulbState) -> anyhow::Result<()> {
         let cli = CLI.as_ref();
 
-        let topic = paho_mqtt::Topic::new(cli, self.data, QOS);
+        let topic = paho_mqtt::Topic::new(cli, format!("{}/set", self.data), QOS);
 
         topic
             .publish(serde_json::to_string(&state).unwrap())
