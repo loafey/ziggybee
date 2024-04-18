@@ -1,0 +1,42 @@
+[
+    {
+        "name": "Living Room",
+        "children": [
+            {
+                "uri": "zigbee2mqtt/0xa46dd4fffe6766fb",
+                "name": "Living Room Lamp",
+                "type": "TradfriBulb"
+            },
+            {
+                "uri": "zigbee2mqtt/0xa46dd4fffe6766fb",
+                "name": "Living Room Lamp (Copy 1)",
+                "type": "TradfriBulb"
+            },
+            {
+                "uri": "zigbee2mqtt/0xa46dd4fffe6766fb",
+                "name": "Living Room Lamp (Copy 2)",
+                "type": "TradfriBulb"
+            }
+        ]
+    },
+    {
+        "name": "Other",
+        "children": [
+            {
+                "uri": "zigbee2mqtt/0xa46dd4fffe6766fb",
+                "name": "Living Room Lamp",
+                "type": "TradfriBulb"
+            },
+            {
+                "uri": "zigbee2mqtt/0xa46dd4fffe6766fb",
+                "name": "Living Room Lamp (Copy 1)",
+                "type": "TradfriBulb"
+            },
+            {
+                "uri": "zigbee2mqtt/0xa46dd4fffe6766fb",
+                "name": "Living Room Lamp (Copy 2)",
+                "type": "TradfriBulb"
+            }
+        ]
+    }
+]
