@@ -32,7 +32,7 @@
 
         const devices = document.getElementsByClassName("device-form");
         for (let i = 0; i < devices.length; i++) {
-            devices[i].addEventListener("change", () => formUpdate(devices[i]));
+            devices[i].addEventListener("input", () => formUpdate(devices[i]));
         }
     </script>
 </body>
