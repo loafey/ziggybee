@@ -871,15 +871,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sitegen"
-version = "0.1.0"
-dependencies = [
- "rand",
- "serde",
- "serde_json",
-]
-
-[[package]]
 name = "slab"
 version = "0.4.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1197,6 +1188,7 @@ dependencies = [
  "colors-transform",
  "env_logger",
  "futures",
+ "log",
  "paho-mqtt",
  "rand",
  "serde",

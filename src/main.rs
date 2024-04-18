@@ -1,13 +1,20 @@
 #![feature(lazy_cell)]
 
-use mqtt::endpoints::ENDPOINTS;
+extern crate log;
 
+use crate::db::{get_setup, init_db};
+
+mod db;
 mod mqtt;
+mod sitegen;
 mod web;
 
 #[tokio::main]
 async fn main() {
     env_logger::init();
-    println!("{:#?}", ENDPOINTS.read().await);
+    init_db().await;
+
+    println!("{:#?}", get_setup().await);
+
     web::setup().await;
 }

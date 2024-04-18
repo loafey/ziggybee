@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZiggyBee</title>
+</head>
+
+<body>
+    $replace-me-tihi$
+    <script>
+        const formUpdate = (form) => {
+            let data = new FormData(form);
+
+            let object = {};
+            data.forEach((value, key) => object[key] = value);
+            let uri = object.uri;
+            delete object.uri;
+            let json = JSON.stringify(object);
+
+            fetch("publish-device", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ uri: uri, body: json })
+            })
+                .then(response => console.log(response));
+        };
+
+        const devices = document.getElementsByClassName("device-form");
+        for (let i = 0; i < devices.length; i++) {
+            devices[i].addEventListener("change", () => formUpdate(devices[i]));
+        }
+    </script>
+</body>
+
+</html>
