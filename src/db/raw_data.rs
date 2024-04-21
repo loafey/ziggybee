@@ -1,4 +1,4 @@
-use super::data::DeviceType;
+use super::device_data::DeviceType;
 use crate::mqtt::subscribe;
 use anyhow::Result;
 use log::error;

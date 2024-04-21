@@ -1,5 +1,4 @@
-pub mod data;
-mod device_data;
+pub mod device_data;
 mod raw_data;
 mod setup_tree;
 use log::info;
