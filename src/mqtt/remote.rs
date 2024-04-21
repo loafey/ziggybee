@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::db::device_data::DeviceType;
+use crate::db::DeviceType;
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;

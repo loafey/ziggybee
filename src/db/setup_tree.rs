@@ -1,4 +1,7 @@
-use super::{device_data::DeviceType, raw_data::get_db, raw_data::reload_db};
+use super::{
+    device_data::reload_device_data,
+    raw_data::{get_db, reload_db},
+};
 use crate::mqtt::subscribe;
 use log::error;
 use serde::{Deserialize, Serialize};
@@ -35,8 +38,6 @@ impl SetupTree {
 pub enum Endpoint {
     Device {
         uri: String,
-        name: String,
-        r#type: DeviceType,
     },
     Endpoint {
         name: String,
@@ -59,6 +60,7 @@ pub async fn get_setup_tree() -> RwLockReadGuard<'static, SetupTree> {
     if let Ok(time) = SystemTime::now().duration_since(time) {
         if time.as_secs_f64() > 10.0 {
             reload_db().await;
+            reload_device_data().await;
             *SETUP.write().await = load_setup().await;
         }
     }
@@ -89,13 +91,7 @@ async fn load_setup() -> SetupTree {
             if let Some(true) = d.device_type.as_ref().map(|d| d.should_subscribe()) {
                 subscribe(k);
             }
-            setup.unsorted.push(Endpoint::Device {
-                uri: k.clone(),
-                name: d.model_id.clone().unwrap_or("Unknown device".to_string()),
-                r#type: DeviceType::from(
-                    d.model_id.clone().unwrap_or("Unknown device".to_string()),
-                ),
-            })
+            setup.unsorted.push(Endpoint::Device { uri: k.clone() })
         }
     }
 

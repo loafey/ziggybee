@@ -1,14 +1,1 @@
-{
-    "general": {
-        "HAL": {
-            "url": "NA",
-            "type": "HostDevice"
-        }
-    },
-    "living_room": {
-        "Living room lamp": {
-            "url": "zigbee2mqtt/0xa46dd4fffe6766fb",
-            "type": "TradfriBulb"
-        }
-    }
-}
+{"0xa46dd4fffe6766fb":{"name":"TRADFRI bulb E27 CWS 806lm","type":"TradfriBulb"},"0x00124b001df43fdc":{"name":"Unknown device","type":{"UnknownDevice":"Unknown device"}},"0x5cc7c1fffe8b7a9d":{"name":"Remote Control N2","type":"TradfriRemoteN2"}}
