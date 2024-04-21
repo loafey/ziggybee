@@ -13,8 +13,7 @@ mod web;
 async fn main() {
     env_logger::init();
     init_db().await;
-
-    println!("{:#?}", get_setup().await);
+    let _ = get_setup().await;
 
     web::setup().await;
 }
