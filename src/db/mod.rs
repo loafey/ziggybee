@@ -18,8 +18,13 @@ pub mod data;
 pub type DB = HashMap<String, Device>;
 
 static DB: LazyLock<RwLock<DB>> = LazyLock::new(|| {
-    let res = futures::executor::block_on(load_db());
-    RwLock::new(res.unwrap())
+    let res = futures::executor::block_on(load_db()).unwrap();
+
+    for k in res.keys() {
+        subscribe(k);
+    }
+
+    RwLock::new(res)
 });
 static LAST_ACCESS: LazyLock<RwLock<SystemTime>> = LazyLock::new(|| RwLock::new(SystemTime::now()));
 static SETUP: LazyLock<RwLock<Setup>> = LazyLock::new(|| {
@@ -86,7 +91,7 @@ async fn load_setup() -> Setup {
     let db = get_db().await;
     for (k, d) in db.iter() {
         if !setup.contains(k) {
-            subscribe(&format!("zigbee2mqtt/{k}/#")).await;
+            subscribe(k);
             setup.unsorted.push(Endpoint::Device {
                 uri: k.clone(),
                 name: d.model_id.clone().unwrap_or("Unknown device".to_string()),

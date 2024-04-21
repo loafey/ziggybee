@@ -1,5 +1,5 @@
 use futures::StreamExt as _;
-use log::error;
+use log::{error, info};
 use paho_mqtt::{AsyncClient, AsyncReceiver, Message};
 use std::{
     env, process,
@@ -23,7 +23,10 @@ pub async fn publish_to_device(device: &str, msg: &str) {
     };
 }
 
-pub async fn subscribe(topic: &str) {}
+pub fn subscribe(topic: &str) {
+    info!("Subscribing to {topic:?}");
+    CLI.subscribe(format!("ziggybee2mqtt/{topic}/#"), QOS);
+}
 
 fn init() -> AsyncClient {
     let host = env::args()
@@ -55,6 +58,7 @@ fn init() -> AsyncClient {
 
 fn subscription_loop(strm: Stream) {
     tokio::task::spawn(async move {
+        info!("Starting subscription loop...");
         while let Some(msg_opt) = strm.lock().await.next().await {
             if let Some(msg) = msg_opt {
                 println!("unhandled event: {msg:?}");
