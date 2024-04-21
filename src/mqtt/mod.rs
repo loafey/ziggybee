@@ -7,7 +7,7 @@ use std::{
 };
 use tokio::sync::Mutex;
 
-use crate::db::get_device_info;
+use crate::{db::get_device_info, mqtt::remote::RemoteAction};
 
 pub mod remote;
 
@@ -67,8 +67,25 @@ fn subscription_loop(strm: Stream) {
             if let Some(msg) = msg_opt {
                 let topic = msg.topic().split_once('/').unwrap().1;
                 let payload = msg.payload_str();
+
                 info!("Got message [{payload}] from {topic:?}");
-                info!("{:?}", get_device_info(topic).await);
+
+                let Some(info) = get_device_info(topic).await else {
+                    error!("message from unknown device {topic:?}");
+                    continue;
+                };
+
+                let r#type = info.device_type.unwrap_or_default();
+
+                let action = match RemoteAction::from_type(&payload, r#type) {
+                    Ok(o) => o,
+                    Err(e) => {
+                        error!("invalid payload: {payload:?}, {e}");
+                        continue;
+                    }
+                };
+
+                println!("{action:?}")
             } else {
                 panic!("lost connection")
             }

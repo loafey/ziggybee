@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use std::collections::HashMap;
+use std::{collections::HashMap, default};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Device {
@@ -55,6 +55,12 @@ pub enum DeviceType {
     TradfriBulb,
     TradfriRemoteN2,
     UnknownDevice(String),
+}
+
+impl Default for DeviceType {
+    fn default() -> Self {
+        DeviceType::UnknownDevice("Unknown device".to_string())
+    }
 }
 impl From<String> for DeviceType {
     fn from(value: String) -> Self {
