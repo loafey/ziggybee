@@ -7,7 +7,7 @@ use std::{
 };
 use tokio::sync::Mutex;
 
-use crate::{db::get_device_info, mqtt::remote::RemoteAction};
+use crate::{db::get_device_info, mqtt::remote::RemoteEvent};
 
 pub mod remote;
 
@@ -77,7 +77,7 @@ fn subscription_loop(strm: Stream) {
 
                 let r#type = info.device_type.unwrap_or_default();
 
-                let action = match RemoteAction::from_type(&payload, r#type) {
+                let action = match RemoteEvent::from_type(&payload, r#type) {
                     Ok(o) => o,
                     Err(e) => {
                         error!("invalid payload: {payload:?}, {e}");

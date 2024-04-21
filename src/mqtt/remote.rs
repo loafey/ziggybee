@@ -5,18 +5,9 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-#[derive(Debug, Clone)]
-pub struct RemoteAction {
-    pub action: RemoteEvent,
-    pub link_quality: Option<i32>,
-}
-impl RemoteAction {
+impl RemoteEvent {
     pub fn from_type(payload: &str, device_type: DeviceType) -> Result<Self> {
         let parsed = serde_json::from_str::<HashMap<String, Value>>(payload)?;
-        let link_quality = parsed
-            .get("linkquality")
-            .and_then(|v| v.as_i64())
-            .map(|v| v as i32);
 
         let action = parsed
             .get("action")
@@ -30,10 +21,7 @@ impl RemoteAction {
             x => RemoteEvent::UnknownAction(format!("{x:?}")),
         };
 
-        Ok(RemoteAction {
-            link_quality,
-            action,
-        })
+        Ok(action)
     }
 }
 
