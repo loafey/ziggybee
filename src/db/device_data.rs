@@ -1,5 +1,3 @@
-use crate::mqtt::remote::RemoteEvent;
-
 use super::raw_data::get_db;
 use anyhow::Result;
 use log::error;
