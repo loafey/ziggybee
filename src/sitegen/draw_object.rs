@@ -76,6 +76,30 @@ impl ToHtml for FormField {
                 ),
                 format!("<label for=\"{uri}-toggle\">Toggle</label>")
             ),
+            Input::RemoteAction {
+                target,
+                placeholder,
+                current_value,
+            } => {
+                let target = format!(
+                    "<input type=\"text\" name=\"{}\" placeholder=\"{placeholder}\" id=\"{uri}-target\" value=\"{}\">",
+                    self.form_name,
+                    target
+                );
+                let json = if let Some(value) = current_value {
+                    format!(
+                    "<input type=\"text\" name=\"{}\" placeholder=\"{placeholder}\" id=\"{uri}-json\" value=\"{}\">",
+                    self.form_name,
+                    value.replace('"', "&quot;")
+                )
+                } else {
+                    format!(
+                        "<input type=\"text\" name=\"{}\" placeholder=\"{placeholder}\" id=\"{uri}-json\">",
+                        self.form_name
+                    )
+                };
+                format!("<form>{target}{json}</form>")
+            }
         };
         format!("<h3>{}</h3>{input}", self.name)
     }
@@ -94,4 +118,9 @@ pub enum Input {
     Slider(Range<i32>),
     Color,
     State,
+    RemoteAction {
+        target: String,
+        placeholder: String,
+        current_value: Option<String>,
+    },
 }

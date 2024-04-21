@@ -1,7 +1,7 @@
 use futures::future::join_all;
 
 use crate::{
-    db::{get_device, get_setup_tree, DeviceType, Endpoint},
+    db::{get_device, get_setup_tree, Device, DeviceType, Endpoint},
     sitegen::draw_object::ToHtml as _,
 };
 
@@ -79,7 +79,84 @@ impl Drawable for Endpoint {
                                     input: Input::State,
                                 },
                             ],
-                            DeviceType::TradfriRemoteN2 => vec![],
+                            DeviceType::TradfriRemoteN2 => vec![
+                                // On
+                                create_json_form(&device, uri, "On action", "on_action", "on"),
+                                // Off
+                                create_json_form(&device, uri, "Off action", "off_action", "off"),
+                                // BrightnessMoveUp
+                                create_json_form(
+                                    &device,
+                                    uri,
+                                    "On brightness up",
+                                    "brightness_up",
+                                    "brightness_move_up",
+                                ),
+                                // BrightnessMoveDown
+                                create_json_form(
+                                    &device,
+                                    uri,
+                                    "On brightness down",
+                                    "on_brightness_down",
+                                    "brightness_move_down",
+                                ),
+                                // BrightnessStop
+                                create_json_form(
+                                    &device,
+                                    uri,
+                                    "On brightness stop",
+                                    "on_brightness_stop",
+                                    "brightness_stop",
+                                ),
+                                // ArrowLeftClick
+                                create_json_form(
+                                    &device,
+                                    uri,
+                                    "On arrow left",
+                                    "on_arrrow_left_click",
+                                    "arrrow_left_click",
+                                ),
+                                // ArrowLeftHold
+                                create_json_form(
+                                    &device,
+                                    uri,
+                                    "On arrow hold",
+                                    "on_arrrow_left_hold",
+                                    "arrrow_left_hold",
+                                ),
+                                // ArrowLeftRelease
+                                create_json_form(
+                                    &device,
+                                    uri,
+                                    "On arrow release",
+                                    "on_arrrow_left_release",
+                                    "arrrow_left_release",
+                                ),
+                                // ArrowRightClick
+                                create_json_form(
+                                    &device,
+                                    uri,
+                                    "On arrow right",
+                                    "on_arrrow_right_click",
+                                    "arrrow_right_click",
+                                ),
+                                // ArrowRightHold
+                                create_json_form(
+                                    &device,
+                                    uri,
+                                    "On arrow hold",
+                                    "on_arrrow_right_hold",
+                                    "arrrow_right_hold",
+                                ),
+                                // ArrowRightRelease
+                                create_json_form(
+                                    &device,
+                                    uri,
+                                    "On arrow release",
+                                    "on_arrrow_right_release",
+                                    "arrrow_right_release",
+                                ),
+                            ],
                             DeviceType::UnknownDevice(_) => vec![],
                         },
                     },
@@ -91,5 +168,28 @@ impl Drawable for Endpoint {
                 }
             }
         }
+    }
+}
+
+fn create_json_form(
+    device: &Device,
+    uri: &str,
+    name: &str,
+    form_name: &str,
+    input: &str,
+) -> FormField {
+    let device = device
+        .actions
+        .get(&format!("{{\"TradfriStyrbarAction\":\"{input}\"}}"))
+        .cloned();
+    FormField {
+        uri: uri.to_string(),
+        name: name.to_string(),
+        form_name: form_name.to_string(),
+        input: Input::RemoteAction {
+            target: device.clone().map(|p| p.target).unwrap_or_default(),
+            placeholder: "Insert json...".to_string(),
+            current_value: device.map(|p| p.code),
+        },
     }
 }
