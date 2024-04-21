@@ -56,6 +56,11 @@ pub enum DeviceType {
     TradfriRemoteN2,
     UnknownDevice(String),
 }
+impl DeviceType {
+    pub fn should_subscribe(&self) -> bool {
+        matches!(self, Self::TradfriRemoteN2)
+    }
+}
 
 impl Default for DeviceType {
     fn default() -> Self {

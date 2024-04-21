@@ -20,8 +20,10 @@ pub type DB = HashMap<String, Device>;
 static DB: LazyLock<RwLock<DB>> = LazyLock::new(|| {
     let res = futures::executor::block_on(load_db()).unwrap();
 
-    for k in res.keys() {
-        subscribe(k);
+    for (k, val) in res.iter() {
+        if let Some(true) = val.device_type.as_ref().map(|v| v.should_subscribe()) {
+            subscribe(k);
+        }
     }
 
     RwLock::new(res)
@@ -102,7 +104,9 @@ async fn load_setup() -> Setup {
     let db = get_db().await;
     for (k, d) in db.iter() {
         if !setup.contains(k) {
-            subscribe(k);
+            if let Some(true) = d.device_type.as_ref().map(|d| d.should_subscribe()) {
+                subscribe(k);
+            }
             setup.unsorted.push(Endpoint::Device {
                 uri: k.clone(),
                 name: d.model_id.clone().unwrap_or("Unknown device".to_string()),
