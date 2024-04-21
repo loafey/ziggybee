@@ -1,5 +1,5 @@
 use crate::{
-    db::{data::DeviceType, get_setup, Endpoint},
+    db::{data::DeviceType, get_setup_tree, Endpoint},
     sitegen::draw_object::ToHtml as _,
 };
 
@@ -14,7 +14,7 @@ pub async fn get_html() -> String {
 }
 
 async fn create_content() -> String {
-    let setup = get_setup().await;
+    let setup = get_setup_tree().await;
     if setup.unsorted.is_empty() {
         "tihi".to_string()
     } else {

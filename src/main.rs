@@ -2,7 +2,7 @@
 
 extern crate log;
 
-use crate::db::{get_setup, init_db};
+use crate::db::{get_setup_tree, init_db};
 
 mod db;
 mod mqtt;
@@ -24,7 +24,7 @@ fn init_log() {
 async fn main() {
     init_log();
     init_db().await;
-    let _ = get_setup().await;
+    let _ = get_setup_tree().await;
 
     web::setup().await;
 }

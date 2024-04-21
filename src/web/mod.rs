@@ -20,8 +20,8 @@ async fn root() -> Html<String> {
     Html(get_html().await)
 }
 
-async fn get_setup() -> Json<db::Setup> {
-    let data = db::get_setup().await.clone();
+async fn get_setup() -> Json<db::SetupTree> {
+    let data = db::get_setup_tree().await.clone();
     Json(data)
 }
 

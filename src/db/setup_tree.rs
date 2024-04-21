@@ -12,18 +12,18 @@ use tokio::sync::{RwLock, RwLockReadGuard};
 
 // Globals
 static LAST_ACCESS: LazyLock<RwLock<SystemTime>> = LazyLock::new(|| RwLock::new(SystemTime::now()));
-static SETUP: LazyLock<RwLock<Setup>> = LazyLock::new(|| {
+static SETUP: LazyLock<RwLock<SetupTree>> = LazyLock::new(|| {
     let res = futures::executor::block_on(load_setup());
     RwLock::new(res)
 });
 
 // Setup conf
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
-pub struct Setup {
+pub struct SetupTree {
     pub setups: Vec<Endpoint>,
     pub unsorted: Vec<Endpoint>,
 }
-impl Setup {
+impl SetupTree {
     pub fn contains(&self, id: &str) -> bool {
         self.setups.iter().any(|c| c.contains(id)) || self.unsorted.iter().any(|c| c.contains(id))
     }
@@ -54,7 +54,7 @@ impl Endpoint {
 }
 
 // Funcs
-pub async fn get_setup() -> RwLockReadGuard<'static, Setup> {
+pub async fn get_setup_tree() -> RwLockReadGuard<'static, SetupTree> {
     let time = *LAST_ACCESS.read().await;
     if let Ok(time) = SystemTime::now().duration_since(time) {
         if time.as_secs_f64() > 10.0 {
@@ -66,20 +66,20 @@ pub async fn get_setup() -> RwLockReadGuard<'static, Setup> {
     SETUP.read().await
 }
 
-async fn load_setup() -> Setup {
+async fn load_setup() -> SetupTree {
     *LAST_ACCESS.write().await = SystemTime::now();
     let mut setup =
-        match read_to_string("data/setup.json").map(|s| serde_json::from_str::<Setup>(&s)) {
+        match read_to_string("data/setup.json").map(|s| serde_json::from_str::<SetupTree>(&s)) {
             Ok(f) => match f {
                 Ok(f) => f,
                 Err(e) => {
                     error!("failed parsing setup: {e}");
-                    Setup::default()
+                    SetupTree::default()
                 }
             },
             Err(e) => {
                 error!("failed loading setup: {e}");
-                Setup::default()
+                SetupTree::default()
             }
         };
 
