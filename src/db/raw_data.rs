@@ -20,10 +20,6 @@ pub struct Device {
 
 pub type DB = HashMap<String, Device>;
 
-pub async fn get_device_info(device: &str) -> Option<Device> {
-    get_db().await.get(device).cloned()
-}
-
 static DB: LazyLock<RwLock<DB>> = LazyLock::new(|| {
     let res = futures::executor::block_on(load_db()).unwrap();
 

@@ -55,7 +55,7 @@ pub struct Payload {
 pub struct Device {
     pub name: String,
     pub r#type: DeviceType,
-    pub actions: HashMap<RemoteEvent, Payload>,
+    pub actions: HashMap<String, Payload>,
 }
 
 pub async fn get_device(device: &str) -> Option<Device> {

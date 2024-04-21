@@ -7,7 +7,10 @@ use std::{
 };
 use tokio::sync::Mutex;
 
-use crate::{db::get_device_info, mqtt::remote::RemoteEvent};
+use crate::{
+    db::{get_device, Payload},
+    mqtt::remote::RemoteEvent,
+};
 
 pub mod remote;
 
@@ -70,22 +73,27 @@ fn subscription_loop(strm: Stream) {
 
                 info!("Got message [{payload}] from {topic:?}");
 
-                let Some(info) = get_device_info(topic).await else {
+                let Some(info) = get_device(topic).await else {
                     error!("message from unknown device {topic:?}");
                     continue;
                 };
 
-                let r#type = info.device_type.unwrap_or_default();
-
-                let action = match RemoteEvent::from_type(&payload, r#type) {
-                    Ok(o) => o,
+                let action = match RemoteEvent::from_type(&payload, info.r#type) {
+                    Ok(o) => serde_json::to_string(&o).unwrap(),
                     Err(e) => {
                         error!("invalid payload: {payload:?}, {e}");
                         continue;
                     }
                 };
 
-                println!("{action:?}")
+                if let Some(Payload { target, code }) = info.actions.get(&action) {
+                    publish_to_device(target, code).await;
+                } else {
+                    error!(
+                        "No action ({}) available for device {topic:?}",
+                        serde_json::to_string(&action).unwrap()
+                    )
+                }
             } else {
                 panic!("lost connection")
             }
