@@ -1,20 +1,4 @@
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
-use std::collections::HashMap;
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Device {
-    #[serde(rename = "ieeeAddr")]
-    pub ieee_addr: String,
-    #[serde(rename = "manufName")]
-    pub manufacturer_name: Option<String>,
-    #[serde(rename = "modelId")]
-    pub model_id: Option<String>,
-    #[serde(rename = "_____non_existent____")]
-    pub device_type: Option<DeviceType>,
-    #[serde(flatten)]
-    pub rest: HashMap<String, Value>,
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct Setup {
