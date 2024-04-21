@@ -25,7 +25,9 @@ pub async fn publish_to_device(device: &str, msg: &str) {
 
 pub fn subscribe(topic: &str) {
     info!("Subscribing to {topic:?}");
-    CLI.subscribe(format!("ziggybee2mqtt/{topic}/#"), QOS);
+    if let Err(e) = CLI.subscribe(format!("zigbee2mqtt/{topic}/#"), QOS).wait() {
+        error!("Failed to subscribe to {topic:?}: {e}")
+    }
 }
 
 fn init() -> AsyncClient {
