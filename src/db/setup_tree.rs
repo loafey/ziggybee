@@ -1,5 +1,5 @@
 use super::{
-    device_data::reload_device_data,
+    device_data::save_device_data,
     raw_data::{get_db, reload_db},
 };
 use crate::mqtt::subscribe;
@@ -60,7 +60,7 @@ pub async fn get_setup_tree() -> RwLockReadGuard<'static, SetupTree> {
     if let Ok(time) = SystemTime::now().duration_since(time) {
         if time.as_secs_f64() > 10.0 {
             reload_db().await;
-            reload_device_data().await;
+            save_device_data().await;
             *SETUP.write().await = load_setup().await;
         }
     }

@@ -25,13 +25,13 @@ impl RemoteEvent {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq, Hash)]
 pub enum RemoteEvent {
     UnknownAction(String),
     TradfriStyrbarAction(TradfriStyrbarAction),
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone, Copy)]
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq, Hash)]
 pub enum TradfriStyrbarAction {
     #[serde(rename = "on")]
     On,

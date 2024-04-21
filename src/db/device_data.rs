@@ -1,3 +1,5 @@
+use crate::mqtt::remote::RemoteEvent;
+
 use super::raw_data::get_db;
 use anyhow::Result;
 use log::error;
@@ -45,9 +47,15 @@ impl From<String> for DeviceType {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Payload {
+    pub target: String,
+    pub code: String,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Device {
     pub name: String,
     pub r#type: DeviceType,
+    pub actions: HashMap<RemoteEvent, Payload>,
 }
 
 pub async fn get_device(device: &str) -> Option<Device> {
@@ -59,10 +67,17 @@ pub async fn get_device_data() -> RwLockReadGuard<'static, HashMap<String, Devic
     DEVICES.read().await
 }
 
-pub async fn reload_device_data() {
-    match load_device_data().await {
-        Ok(o) => *DEVICES.write().await = o,
-        Err(e) => error!("failed reloading device data: {e}"),
+pub async fn save_device_data() {
+    async fn inner() -> Result<()> {
+        let data = serde_json::to_vec(&*DEVICES.read().await)?;
+        let mut f = File::create("data/devices.json")?;
+        f.write_all(&data)?;
+
+        Ok(())
+    }
+
+    if let Err(e) = inner().await {
+        error!("failed to save device data: {e}");
     }
 }
 
@@ -93,6 +108,7 @@ async fn load_device_data() -> Result<HashMap<String, Device>> {
                     r#type: DeviceType::from(
                         d.model_id.clone().unwrap_or("Unknown device".to_string()),
                     ),
+                    actions: HashMap::new(),
                 },
             );
         }
