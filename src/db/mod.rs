@@ -1,3 +1,5 @@
+use crate::mqtt::subscribe;
+
 use self::data::{DeviceType, Endpoint, Setup};
 use anyhow::Result;
 use data::Device;
@@ -34,20 +36,10 @@ pub async fn init_db() {
 }
 
 async fn get_db() -> RwLockReadGuard<'static, DB> {
-    let time = *LAST_ACCESS.read().await;
-    if let Ok(time) = SystemTime::now().duration_since(time) {
-        if time.as_secs_f64() > 10.0 {
-            if let Err(err) = load_db().await {
-                error!("failed to reload DB: {}", err)
-            }
-        }
-    }
-
     DB.read().await
 }
 
 async fn load_db() -> Result<DB> {
-    *LAST_ACCESS.write().await = SystemTime::now();
     let db = read_to_string("docker/zigbee2mqtt-data/database.db")?;
     let db = db
         .lines()
@@ -59,10 +51,23 @@ async fn load_db() -> Result<DB> {
 }
 
 pub async fn get_setup() -> RwLockReadGuard<'static, Setup> {
+    let time = *LAST_ACCESS.read().await;
+    if let Ok(time) = SystemTime::now().duration_since(time) {
+        if time.as_secs_f64() > 10.0 {
+            match load_db().await {
+                Err(err) => error!("failed to reload DB: {}", err),
+                Ok(db) => *DB.write().await = db,
+            }
+
+            *SETUP.write().await = load_setup().await;
+        }
+    }
+
     SETUP.read().await
 }
 
 async fn load_setup() -> Setup {
+    *LAST_ACCESS.write().await = SystemTime::now();
     let mut setup =
         match read_to_string("data/setup.json").map(|s| serde_json::from_str::<Setup>(&s)) {
             Ok(f) => match f {
@@ -81,6 +86,7 @@ async fn load_setup() -> Setup {
     let db = get_db().await;
     for (k, d) in db.iter() {
         if !setup.contains(k) {
+            subscribe(&format!("zigbee2mqtt/{k}/#")).await;
             setup.unsorted.push(Endpoint::Device {
                 uri: k.clone(),
                 name: d.model_id.clone().unwrap_or("Unknown device".to_string()),
