@@ -1,8 +1,5 @@
 use crate::{
-    db::{
-        data::{DeviceType, Endpoint},
-        get_setup,
-    },
+    db::{data::DeviceType, get_setup, Endpoint},
     sitegen::draw_object::ToHtml as _,
 };
 

@@ -1,8 +1,4 @@
-use crate::{
-    db::{self, data},
-    mqtt::publish_to_device,
-    sitegen::get_html,
-};
+use crate::{db, mqtt::publish_to_device, sitegen::get_html};
 use axum::{
     response::Html,
     routing::{get, post},
@@ -24,7 +20,7 @@ async fn root() -> Html<String> {
     Html(get_html().await)
 }
 
-async fn get_setup() -> Json<data::Setup> {
+async fn get_setup() -> Json<db::Setup> {
     let data = db::get_setup().await.clone();
     Json(data)
 }
