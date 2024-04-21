@@ -32,6 +32,10 @@ static SETUP: LazyLock<RwLock<Setup>> = LazyLock::new(|| {
     RwLock::new(res)
 });
 
+pub async fn get_device_info(device: &str) -> Option<Device> {
+    get_db().await.get(device).cloned()
+}
+
 pub async fn init_db() {
     debug!("getting db");
     let _ = get_db().await;
@@ -49,7 +53,14 @@ async fn load_db() -> Result<DB> {
     let db = db
         .lines()
         .map(serde_json::from_str::<Device>)
-        .map(|r| r.map(|d| (d.ieee_addr.clone(), d)))
+        .map(|r| {
+            r.map(|mut d| {
+                d.device_type = Some(DeviceType::from(
+                    d.model_id.clone().unwrap_or("Unknown device".to_string()),
+                ));
+                (d.ieee_addr.clone(), d)
+            })
+        })
         .collect::<Result<HashMap<_, _>, _>>()?;
 
     Ok(db)
@@ -95,7 +106,9 @@ async fn load_setup() -> Setup {
             setup.unsorted.push(Endpoint::Device {
                 uri: k.clone(),
                 name: d.model_id.clone().unwrap_or("Unknown device".to_string()),
-                r#type: DeviceType::from(d.model_id.clone().unwrap_or_default()),
+                r#type: DeviceType::from(
+                    d.model_id.clone().unwrap_or("Unknown device".to_string()),
+                ),
             })
         }
     }

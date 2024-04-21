@@ -7,6 +7,8 @@ use std::{
 };
 use tokio::sync::Mutex;
 
+use crate::db::get_device_info;
+
 pub mod remote;
 
 const QOS: i32 = 1;
@@ -63,7 +65,10 @@ fn subscription_loop(strm: Stream) {
         info!("Starting subscription loop...");
         while let Some(msg_opt) = strm.lock().await.next().await {
             if let Some(msg) = msg_opt {
-                println!("unhandled event: {msg:?}");
+                let topic = msg.topic().split_once('/').unwrap().1;
+                let payload = msg.payload_str();
+                info!("Got message [{payload}] from {topic:?}");
+                info!("{:?}", get_device_info(topic).await);
             } else {
                 panic!("lost connection")
             }

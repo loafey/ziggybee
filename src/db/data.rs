@@ -10,6 +10,8 @@ pub struct Device {
     pub manufacturer_name: Option<String>,
     #[serde(rename = "modelId")]
     pub model_id: Option<String>,
+    #[serde(rename = "_____non_existent____")]
+    pub device_type: Option<DeviceType>,
     #[serde(flatten)]
     pub rest: HashMap<String, Value>,
 }
