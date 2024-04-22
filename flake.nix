@@ -16,17 +16,8 @@
         overlays = [ fenix.overlays.default ];
         pkgs = import nixpkgs {
           inherit system overlays;
-          config = {
-            permittedInsecurePackages = [
-              "freeimage-unstable-2021-11-01"
-            ];
-          };
+          config = { };
         };
-
-        trenchbroom-working = pkgs.runCommand "trenchbroom"
-          { buildInputs = [ pkgs.makeWrapper pkgs.tree pkgs.gnused ]; } ''
-          makeWrapper ${pkgs.trenchbroom}/bin/trenchbroom $out/bin/trenchbroom --set QT_QPA_PLATFORM xcb
-        '';
         toolchain = with fenix.packages.${system};  combine [
           minimal.cargo
           minimal.rustc
