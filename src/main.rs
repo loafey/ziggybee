@@ -6,7 +6,6 @@ use crate::db::{get_setup_tree, init_db};
 
 mod db;
 mod mqtt;
-mod sitegen;
 mod web;
 
 fn init_log() {

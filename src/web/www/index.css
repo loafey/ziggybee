@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+:root {
+    --f1: #f9b9f2ff;
+    --f2: #bca0bcff;
+
+    --b1: #2b3d41ff;
+    --b2: #4c5f6bff;
+    --b3: #83a0a0ff;
+}
+
+body {
+    background-color: var(--b1);
+    padding: 0;
+    margin: 0;
+}
+
+h1 {
+    color: var(--f2);
+}
+
+* {
+    font-family: "Open Sans", sans-serif;
+}
+
+.device {
+    background-color: var(--b3);
+    color: var(--f1);
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+input {
+    width: 100%;
+}
+
+.tabs {
+    display: flex;
+}
+
+.tabs button {
+    margin: 0;
+    border-radius: 0;
+    border: none;
+    font-size: 2rem;
+    padding: 20px;
+    background-color: transparent;
+    color: var(--f1);
+    border-bottom: var(--f2) 5px solid;
+    cursor: pointer;
+}
+
+.tab-container {
+    margin: 10px;
+}

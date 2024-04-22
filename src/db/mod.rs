@@ -4,7 +4,7 @@ mod setup_tree;
 pub use device_data::{get_device, Device, DeviceType, Payload};
 use log::info;
 use raw_data::get_db;
-pub use setup_tree::{get_setup_tree, Endpoint, SetupTree};
+pub use setup_tree::{get_setup_tree, SetupTree};
 
 use crate::db::device_data::get_device_data;
 
